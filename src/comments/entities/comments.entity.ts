@@ -1,4 +1,4 @@
-import { BacklogBaseModel } from '../../common/BacklogBaseModel';
+import { BacklogBaseModel } from '../../common/typeorm/BacklogBaseModel';
 import { Column, Entity, JoinColumn, OneToOne } from 'typeorm';
 import { PostsModel } from '../../posts/entities/posts.entity';
 import { UsersModel } from '../../auth/entities/users.entity';

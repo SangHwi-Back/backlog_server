@@ -1,5 +1,5 @@
 import { Column, Entity, JoinColumn, OneToMany, OneToOne } from 'typeorm';
-import { BacklogBaseModel } from '../../common/BacklogBaseModel';
+import { BacklogBaseModel } from '../../common/typeorm/BacklogBaseModel';
 import { RolesModel } from './roles.entity';
 import { PostsModel } from '../../posts/entities/posts.entity';
 import { PermissionsModel } from './permissions.entity';
@@ -18,7 +18,7 @@ export class UsersModel extends BacklogBaseModel {
   @Column({ nullable: false })
   permission_id: number;
 
-  @Column()
+  @Column({ nullable: false, default: '' })
   avatar_url: string;
 
   @Column({ unique: true })

@@ -1,5 +1,5 @@
 import { Entity, Column, OneToOne, JoinColumn } from 'typeorm';
-import { BacklogBaseModel } from '../../common/BacklogBaseModel';
+import { BacklogBaseModel } from '../../common/typeorm/BacklogBaseModel';
 import { UsersModel } from './users.entity';
 
 @Entity('social_accounts')

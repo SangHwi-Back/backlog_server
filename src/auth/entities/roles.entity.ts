@@ -1,5 +1,5 @@
 import { Entity, Column } from 'typeorm';
-import { BacklogBaseModel } from '../../common/BacklogBaseModel';
+import { BacklogBaseModel } from '../../common/typeorm/BacklogBaseModel';
 
 @Entity('roles')
 export class RolesModel extends BacklogBaseModel {

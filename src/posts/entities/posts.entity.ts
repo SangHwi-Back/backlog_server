@@ -1,5 +1,5 @@
 import { Entity, Column, OneToOne, OneToMany, JoinColumn } from 'typeorm';
-import { BacklogBaseModel } from '../../common/BacklogBaseModel';
+import { BacklogBaseModel } from '../../common/typeorm/BacklogBaseModel';
 import { UsersModel } from '../../auth/entities/users.entity';
 import { TagsModel } from './tags.entity';
 
