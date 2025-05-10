@@ -10,7 +10,6 @@ import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
 import * as process from 'node:process';
 import { LoginUserDto, RegisterUserDto } from './dto/UserDto';
-import { ConfigService } from '@nestjs/config';
 
 type LocalJWTToken = {
   token: string;
@@ -24,7 +23,6 @@ export class AuthService {
     @InjectRepository(UsersModel)
     private readonly usersRepository: Repository<UsersModel>,
     private readonly jwtService: JwtService,
-    private readonly configService: ConfigService,
   ) {}
 
   extractTokenFromHeader(rawToken: string): LocalJWTToken {
@@ -58,6 +56,36 @@ export class AuthService {
   }
 
   async getUserWithParamEmailAndPassword(email: string, password: string) {
+    const user = await this.usersRepository.findOne({ where: { email } });
+
+    if (!user) {
+      throw new UnauthorizedException('존재하지 않는 사용자입니다');
+    }
+
+    try {
+      const compareResult = await bcrypt.compare(password, user.password);
+      if (!compareResult) {
+        throw new UnauthorizedException('비밀번호가 틀림');
+      }
+
+      return user;
+    } catch (e) {
+      throw new UnauthorizedException(e);
+    }
+  }
+
+  async getUserWithParamEmail(email: string) {
+    const user = await this.usersRepository.findOne({ where: { email } });
+
+    if (!user) {
+      throw new UnauthorizedException('존재하지 않는 사용자입니다');
+    }
+
+    return user;
+  }
+
+  async getUserWithParamToken(token: string) {
+    const { email, password } = this.decodeBase64Token(token);
     const user = await this.usersRepository.findOne({ where: { email } });
 
     if (!user) {
@@ -125,7 +153,6 @@ export class AuthService {
       email: user.email,
     });
 
-    const result = await this.usersRepository.save(userEntity);
-    return result;
+    return await this.usersRepository.save(userEntity);
   }
 }

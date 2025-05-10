@@ -10,8 +10,8 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { UsersModel } from '../../auth/entities/users.entity';
 import { Repository } from 'typeorm';
 
-interface RequestWithExtension extends Request {
-  user?: any;
+export interface RequestWithExtension extends Request {
+  user?: UsersModel;
   tokenType?: string;
 }
 
