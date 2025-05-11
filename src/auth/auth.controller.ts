@@ -10,14 +10,14 @@ export class AuthController {
 
   @ApiOperation({ summary: '새로운 사용자 등록' })
   @ApiResponse({ status: 201, description: '사용자 등록 성공' })
-  @Post('register/user')
-  registerUser(@Body() dto: RegisterUserDto) {
+  @Post('/register/user')
+  async registerUser(@Body() dto: RegisterUserDto) {
     return this.authService.createUser(dto);
   }
 
   @ApiOperation({ summary: '사용자 로그인' })
   @ApiResponse({ status: 200, description: '로그인 성공, 토큰 반환' })
-  @Post('login')
+  @Post('/login')
   loginUser(@Body() dto: LoginUserDto) {
     return this.authService.loginUser(dto);
   }

@@ -10,6 +10,11 @@ import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
 import * as process from 'node:process';
 import { LoginUserDto, RegisterUserDto } from './dto/UserDto';
+import { BacklogUserRole, RolesModel } from './entities/roles.entity';
+import {
+  BacklogPermission,
+  PermissionsModel,
+} from './entities/permissions.entity';
 
 type LocalJWTToken = {
   token: string;
@@ -22,6 +27,10 @@ export class AuthService {
   constructor(
     @InjectRepository(UsersModel)
     private readonly usersRepository: Repository<UsersModel>,
+    @InjectRepository(RolesModel)
+    private readonly rolesRepository: Repository<RolesModel>,
+    @InjectRepository(PermissionsModel)
+    private readonly permissionRepository: Repository<PermissionsModel>,
     private readonly jwtService: JwtService,
   ) {}
 
@@ -147,12 +156,34 @@ export class AuthService {
       throw new BadRequestException('이미 존재하는 Email 입니다.');
     }
 
+    const userRole = await this.rolesRepository.findOne({
+      where: { role: BacklogUserRole.user },
+    });
+
+    if (!userRole) {
+      throw new BadRequestException('역할 설정을 확인해주시기 바랍니다.');
+    }
+
+    const permission = await this.permissionRepository.findOne({
+      where: { permission: BacklogPermission.comment },
+    });
+
+    if (!permission) {
+      throw new BadRequestException('권한 설정을 확인해주시기 바랍니다.');
+    }
+
     const userEntity = this.usersRepository.create({
       nick_name: user.nick_name,
       password: user.password,
       email: user.email,
+      role_id: userRole.id,
+      permission_id: permission.id,
     });
 
-    return await this.usersRepository.save(userEntity);
+    return this.usersRepository.save(userEntity);
+  }
+
+  async verityUserById(user_id: number) {
+    return await this.usersRepository.exists({ where: { id: user_id } });
   }
 }

@@ -11,10 +11,10 @@ export class PostsModel extends BacklogBaseModel {
   @Column({ nullable: false })
   title: string;
 
-  @Column({ nullable: false, unique: true })
+  @Column({ nullable: false })
   category_id: number;
 
-  @Column({ nullable: false, type: 'text' })
+  @Column({ nullable: false })
   content: string;
 
   @Column({ default: 'draft' })
@@ -27,7 +27,7 @@ export class PostsModel extends BacklogBaseModel {
   @JoinColumn({ name: 'user_id' })
   user: UsersModel;
 
-  @OneToMany(() => TagsModel, (tag) => tag.id)
+  @OneToMany(() => TagsModel, (tag) => tag.post)
   @JoinColumn({ name: 'id' })
   tags: TagsModel[];
 }

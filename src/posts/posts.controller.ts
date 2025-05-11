@@ -1,9 +1,12 @@
 import {
   BadRequestException,
+  Body,
   Controller,
+  DefaultValuePipe,
   Get,
   Param,
   ParseIntPipe,
+  Post,
   Req,
   UseGuards,
 } from '@nestjs/common';
@@ -21,6 +24,11 @@ export class PostsController {
     return this.postsService.getPostsByRequest(req);
   }
 
+  @Get('/all')
+  getAllPosts() {
+    return this.postsService.getPosts();
+  }
+
   @Get(':id')
   @UseGuards(BasicTokenGuard)
   getPostById(
@@ -33,5 +41,21 @@ export class PostsController {
     } else {
       throw new BadRequestException('email is not string');
     }
+  }
+
+  @Post()
+  @UseGuards(BasicTokenGuard)
+  createPost(
+    @Body('title') title: string,
+    @Body('category_id', ParseIntPipe) category_id: number,
+    @Body('content') content: string,
+    @Body('status', new DefaultValuePipe(null)) status: string | null,
+    @Req() req: RequestWithExtension,
+  ) {
+    return this.postsService.createPost(
+      req.user?.id,
+      { title, category_id, content },
+      status,
+    );
   }
 }
